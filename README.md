@@ -30,8 +30,8 @@ Or install it yourself as:
 
 class User < ActiveRecord::Base
   include DelayedAfterCommit
-  delayed_on_update :hi_ive_been_updated
-  delayed_on_create :hi_im_new_around_here
+  delayed_after_update :hi_ive_been_updated
+  delayed_after_create :hi_im_new_around_here
 
   def hi_ive_been_updated
     puts "Hi - I've been updated"

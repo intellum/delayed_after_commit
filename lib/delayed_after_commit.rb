@@ -11,11 +11,11 @@ module DelayedAfterCommit
       obj.send(method)
     end
 
-    def delayed_on_create(method, &block)
+    def delayed_after_create(method, &block)
       delayed_after_commit(method, on: :create, &block)
     end
 
-    def delayed_on_update(method, &block)
+    def delayed_after_update(method, &block)
       delayed_after_commit(method, on: :update, &block)
     end
 

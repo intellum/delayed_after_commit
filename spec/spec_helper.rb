@@ -15,8 +15,8 @@ end
 
 class User < ActiveRecord::Base
   include DelayedAfterCommit
-  delayed_on_update :increment_number_of_updates
-  delayed_on_create :calculate_number_of_letters_in_name
+  delayed_after_update :increment_number_of_updates
+  delayed_after_create :calculate_number_of_letters_in_name
 
   protected
   def calculate_number_of_letters_in_name
