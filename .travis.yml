@@ -1,0 +1,19 @@
+language: ruby
+
+rvm:
+  - 2.3.0
+
+sudo: false
+
+matrix:
+  allow_failures:
+    - rvm: rbx-2
+    - rvm: jruby-19mode
+    - rvm: ruby-head
+    - rvm: jruby-head
+
+gemfile:
+  - gemfiles/rails_42.gemfile
+  - gemfiles/rails_5.gemfile
+
+script: 'bundle exec rake spec'
