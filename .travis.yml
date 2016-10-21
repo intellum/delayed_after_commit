@@ -17,3 +17,10 @@ gemfile:
   - gemfiles/rails_5.gemfile
 
 script: 'bundle exec rake spec'
+
+notifications:
+  email:
+    recipients:
+      - simon@renzke.com
+    on_success: 'never'
+    on_failure: 'change'
