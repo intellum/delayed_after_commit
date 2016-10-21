@@ -11,23 +11,23 @@ module DelayedAfterCommit
       obj.send(method)
     end
 
-    def delayed_on_create(method)
-      delayed_after_commit(method, on: :create)
+    def delayed_on_create(method, &block)
+      delayed_after_commit(method, on: :create, &block)
     end
 
-    def delayed_on_update(method)
-      delayed_after_commit(method, on: :update)
+    def delayed_on_update(method, &block)
+      delayed_after_commit(method, on: :update, &block)
     end
 
     protected
-    def delayed_after_commit(method, on:)
+    def delayed_after_commit(method, on:, &block)
       # this creates a method that runs `enqueue_delayed_method`
       # it then adds that method to the after_commit callback
       delayed_method_name = "delayed_after_#{on}_#{method}"
       define_method(delayed_method_name) do |m = method|
         self.class.delay.enqueue_delayed_method(m, self.id)
       end
-      self.after_commit(delayed_method_name.to_sym, on: on)
+      self.after_commit(delayed_method_name.to_sym, on: on, &block)
     end
   end
 end
