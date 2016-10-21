@@ -20,10 +20,9 @@ module DelayedAfterCommit
     end
 
     protected
-    def delayed_after_commit(method, on: nil)
+    def delayed_after_commit(method, on:)
       # this creates a method that runs `enqueue_delayed_method`
       # it then adds that method to the after_commit callback
-      on ||= :update
       delayed_method_name = "delayed_after_#{on}_#{method}"
       define_method(delayed_method_name) do |m = method|
         self.class.delay.enqueue_delayed_method(m, self.id)

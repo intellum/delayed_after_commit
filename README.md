@@ -30,8 +30,16 @@ Or install it yourself as:
 
 class User < ActiveRecord::Base
   include DelayedAfterCommit
-  delayed_on_update :increment_number_of_updates
-  delayed_on_create :calculate_number_of_letters_in_name
+  delayed_on_update :hi_ive_been_updated
+  delayed_on_create :hi_im_new_around_here
+
+  def hi_ive_been_updated
+    puts "Hi - I've been updated"
+  end
+
+  def hi_ive_been_updated
+    puts "Hi - I've just been created"
+  end
 end
 
 ```
