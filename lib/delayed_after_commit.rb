@@ -7,8 +7,9 @@ module DelayedAfterCommit
     def enqueue_delayed_method(method, id)
       # this is used as a generic method that is created to run asyncronously from within sidekiq
       # it finds the object, and runs the deferred method
-      obj = self.find(id)
-      obj.send(method)
+      if obj = self.find_by_id(id)
+        obj.send(method)
+      end
     end
 
     def delayed_after_create(*args, &block)
