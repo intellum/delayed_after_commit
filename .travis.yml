@@ -21,6 +21,6 @@ script: 'bundle exec rake spec'
 notifications:
   email:
     recipients:
-      - simon@renzke.com
+      - simon@rentzke.com
     on_success: 'never'
     on_failure: 'change'
