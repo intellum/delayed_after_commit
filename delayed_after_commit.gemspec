@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{delayed after commit}
   spec.description   = %q{defer your after commit callbacks to sidekiq}
-  spec.homepage      = "https://intellum.com"
+  spec.homepage      = "https://github.com/intellum/delayed_after_commit"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
