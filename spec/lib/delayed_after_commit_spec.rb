@@ -12,8 +12,16 @@ RSpec.describe 'delayed after commit callback' do
     it 'should update the number of updates when sidekiq is running inline' do
       Sidekiq::Worker.clear_all
       Sidekiq::Testing.inline! do
-        bob.update_attributes(:name => 'Bob loblaw')
+        bob.update_attributes(:name => 'Bob loblaw', :increment_enabled => true)
         expect(bob.reload.number_of_updates).to eq 1
+      end
+    end
+
+    it 'should not update the number of updates increment_enabled is not true' do
+      Sidekiq::Worker.clear_all
+      Sidekiq::Testing.inline! do
+        bob.update_attributes(:name => 'Bob loblaw', :increment_enabled => false)
+        expect(bob.reload.number_of_updates).to eq nil
       end
     end
 
@@ -21,7 +29,7 @@ RSpec.describe 'delayed after commit callback' do
       Sidekiq::Worker.clear_all
       Sidekiq::Testing.fake! do
         expect {
-          bob.update_attributes(:name => 'Bob loblaw')
+          bob.update_attributes(:name => 'Bob loblaw', :increment_enabled => true)
         }.to change(Sidekiq::Queues['default'], :size).by(1)
         expect(Sidekiq::Queues['default'].first["args"].first).to include("increment_number_of_updates")
       end

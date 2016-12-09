@@ -13,12 +13,14 @@ module DelayedAfterCommit
     end
 
     def delayed_after_create(*args, &block)
-      args << {on: :create}
+      args[1] ||= {}
+      args[1][:on] = :create
       delayed_after_commit(*args, &block)
     end
 
     def delayed_after_update(*args, &block)
-      args << {on: :update}
+      args[1] ||= {}
+      args[1][:on] = :update
       delayed_after_commit(*args, &block)
     end
 
