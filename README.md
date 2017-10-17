@@ -44,6 +44,28 @@ end
 
 ```
 
+### Notes
+
+If you want to invoke the `delayed_after_update` callback only when an attribute has changed, you must check the attribute change with `#previous_changes`. Example:
+
+```ruby
+delayed_after_update :geolocate, if: :location_changed?
+```
+
+won't invoke `geolocate` even if `#location` has changed.
+
+Instead you must do something like
+
+```ruby
+delayed_after_update :geolocate, if: :location_was_changed?
+
+def location_was_changed?
+  "location".in? previous_changes
+end
+```
+
+This is necessary because the callback is run after the transaction is committed to the database.
+
 ## Roadmap
 
 - Allow asyncronous callbacks on destroying objects
