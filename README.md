@@ -64,6 +64,8 @@ def location_was_changed?
 end
 ```
 
+This is necessary because the callback is run after the transaction is committed to the database.
+
 ## Roadmap
 
 - Allow asyncronous callbacks on destroying objects
