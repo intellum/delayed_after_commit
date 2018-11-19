@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
     puts "Hi - I've been updated"
   end
 
-  def hi_ive_been_updated
+  def hi_im_new_around_here
     puts "Hi - I've just been created"
   end
 end
