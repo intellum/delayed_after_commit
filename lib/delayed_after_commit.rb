@@ -4,11 +4,22 @@ module DelayedAfterCommit
   extend ActiveSupport::Concern
 
   class_methods do
-    def enqueue_delayed_method(method, id)
+    # If retry_max is set, the queued method will retry that number of times
+    # before finally failing. retry_count is automatically incremented with
+    # each run of the method.
+    def enqueue_delayed_method(method, id, retry_max = nil, retry_count = 0)
       # this is used as a generic method that is created to run asyncronously from within sidekiq
       # it finds the object, and runs the deferred method
-      if obj = self.find_by_id(id)
-        obj.send(method)
+      begin
+        if obj = self.find_by_id(id)
+          obj.send(method)
+        end
+      rescue => e
+        if retry_max.present? && retry_count < retry_max
+          self.delay_for(retry_count * 60, retry: false).enqueue_delayed_method(method, id, retry_max, retry_count + 1)
+        end
+
+        raise e
       end
     end
 
@@ -29,10 +40,15 @@ module DelayedAfterCommit
       # this creates a method that runs `enqueue_delayed_method`
       # it then adds that method to the after_commit callback
       opts = args.extract_options!
+      retry_max = opts.delete(:retry_max)
       method = args.first
       delayed_method_name = "delayed_after_#{opts[:on]}_#{method}"
       define_method(delayed_method_name) do |m = method|
-        self.class.delay.enqueue_delayed_method(m, self.id)
+        if retry_max.present?
+          self.class.delay(retry: false).enqueue_delayed_method(m, self.id, retry_max)
+        else
+          self.class.delay.enqueue_delayed_method(m, self.id)
+        end
       end
       self.after_commit(delayed_method_name.to_sym, opts, &block)
     end

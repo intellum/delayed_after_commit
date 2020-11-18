@@ -6,6 +6,8 @@ require 'sidekiq/testing'
 require "delayed_after_commit"
 require 'byebug'
 
+Sidekiq::Extensions.enable_delay!
+
 ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
 ActiveRecord::Migration.verbose = false
 
@@ -15,10 +17,12 @@ end
 
 class User < ActiveRecord::Base
   include DelayedAfterCommit
-  attr_accessor :increment_enabled
+  attr_accessor :increment_enabled, :fail_enabled
 
   delayed_after_update :increment_number_of_updates, if: :increment_enabled
   delayed_after_create :calculate_number_of_letters_in_name
+
+  delayed_after_update :failing_callback, if: :fail_enabled, retry_max: 3
 
   protected
   def calculate_number_of_letters_in_name
@@ -27,5 +31,9 @@ class User < ActiveRecord::Base
 
   def increment_number_of_updates
     update_column('number_of_updates', self.number_of_updates.to_i + 1)
+  end
+
+  def failing_callback
+    raise "This fails"
   end
 end
