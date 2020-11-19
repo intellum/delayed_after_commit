@@ -1,7 +1,12 @@
 language: ruby
 
 rvm:
-  - 2.3.0
+  - 2.5.7
+
+install:
+  - gem uninstall bundler
+  - gem install bundler --version '2.1.4'
+  - bundle install
 
 sudo: false
 
@@ -13,8 +18,7 @@ matrix:
     - rvm: jruby-head
 
 gemfile:
-  - gemfiles/rails_42.gemfile
-  - gemfiles/rails_5.gemfile
+  - gemfiles/rails_6.gemfile
 
 script: 'bundle exec rake spec'
 

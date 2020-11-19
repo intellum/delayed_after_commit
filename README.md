@@ -6,7 +6,7 @@ Exactly the same as after_commit, except it puts the job onto the Sidekiq queue.
 
 Allows you to queue active record methods, after they have been created or updated.
 
-Requires Sidekiq, and Rails >= 4.
+Requires Sidekiq, and Rails >= 6.
 
 ## Installation
 
