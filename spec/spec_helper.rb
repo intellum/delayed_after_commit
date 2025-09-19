@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   attr_accessor :increment_enabled, :fail_enabled
 
   delayed_after_update :increment_number_of_updates, if: :increment_enabled
-  delayed_after_create :calculate_number_of_letters_in_name
+  delayed_after_create :calculate_number_of_letters_in_name, queue: 'high'
 
   delayed_after_update :failing_callback, if: :fail_enabled, retry_max: 3
 

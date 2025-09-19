@@ -50,8 +50,8 @@ RSpec.describe 'delayed after commit callback' do
       Sidekiq::Testing.fake! do
         expect do
           User.create!(name: 'Alice')
-        end.to change(Sidekiq::Queues['default'], :size).by(1)
-        expect(Sidekiq::Queues['default'].last["args"]).to include("calculate_number_of_letters_in_name")
+        end.to change(Sidekiq::Queues['high'], :size).by(1)
+        expect(Sidekiq::Queues['high'].last["args"]).to include("calculate_number_of_letters_in_name")
       end
     end
   end
@@ -67,7 +67,7 @@ RSpec.describe 'delayed after commit callback' do
 
         job = Sidekiq::Queues["default"].last
         expect(job["retry"]).to be(false) # We are not using sidekiq's retry feature
-        expect(job["args"]).to eq(["User", "failing_callback", bob.id.to_s, 3])
+        expect(job["args"]).to eq(["User", "failing_callback", bob.id.to_s, 3, 0, "default"])
       end
     end
 
