@@ -31,7 +31,7 @@ module DelayedAfterCommit
       method = args.first
       delayed_method_name = "delayed_after_#{opts[:on]}_#{method}"
       define_method(delayed_method_name) do |m = method|
-        Worker.perform_async(self.class.name, m.to_s, id.to_s, retry_max.to_i, 0, queue.to_s)
+        Worker.set(queue:).perform_async(self.class.name, m.to_s, id.to_s, retry_max.to_i, 0, queue.to_s)
       end
       after_commit(delayed_method_name.to_sym, opts, &block)
     end

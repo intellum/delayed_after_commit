@@ -14,7 +14,7 @@ module DelayedAfterCommit
         obj.send(method) if obj.present?
       rescue StandardError => e
         if retry_max.present? && retry_count < retry_max
-          self.class.perform_in(retry_count.minutes, class_name, method, id, retry_max, retry_count + 1, queue.to_s)
+          self.class.set(queue:).perform_in(retry_count.minutes, class_name, method, id, retry_max, retry_count + 1, queue.to_s)
         end
         raise e
       end
